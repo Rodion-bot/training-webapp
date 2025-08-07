@@ -2,58 +2,36 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Фитнес Тренировки</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фитнес-Трекер</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Добавить тренировку</h1>
-        <form id="trainingForm">
+        <h1>Моя тренировка</h1>
+        <form id="training-form">
             <label for="date">Дата:</label>
-            <input type="date" id="date" name="date" required />
+            <input type="date" id="date" name="date" required>
 
             <label for="exercise">Упражнение:</label>
-            <select id="exercise" name="exercise" required>
-                <option value="">Выбери упражнение</option>
-                <optgroup label="Грудь">
-                    <option value="Жим лёжа">Жим лёжа</option>
-                    <option value="Разводка гантелей">Разводка гантелей</option>
-                    <option value="Отжимания">Отжимания</option>
-                </optgroup>
-                <optgroup label="Спина">
-                    <option value="Тяга верхнего блока">Тяга верхнего блока</option>
-                    <option value="Тяга штанги в наклоне">Тяга штанги в наклоне</option>
-                </optgroup>
-                <optgroup label="Ноги">
-                    <option value="Приседания">Приседания</option>
-                    <option value="Жим ногами">Жим ногами</option>
-                    <option value="Выпады">Выпады</option>
-                </optgroup>
-                <optgroup label="Плечи">
-                    <option value="Жим гантелей вверх">Жим гантелей вверх</option>
-                    <option value="Махи в стороны">Махи в стороны</option>
-                </optgroup>
-                <optgroup label="Руки">
-                    <option value="Сгибание на бицепс">Сгибание на бицепс</option>
-                    <option value="Французский жим">Французский жим</option>
-                </optgroup>
-                <!-- Здесь можно легко добавить ещё -->
-            </select>
+            <select id="exercise" name="exercise" required></select>
 
             <label for="weight">Вес (кг):</label>
-            <input type="number" id="weight" name="weight" required />
+            <input type="number" id="weight" name="weight" required>
 
             <label for="reps">Повторы:</label>
-            <input type="number" id="reps" name="reps" required />
+            <input type="number" id="reps" name="reps" required>
 
             <label for="sets">Подходы:</label>
-            <input type="number" id="sets" name="sets" required />
+            <input type="number" id="sets" name="sets" required>
 
             <button type="submit">Сохранить</button>
         </form>
     </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="exercises.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -1,19 +1,28 @@
 
-document.getElementById("trainingForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", () => {
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-    const data = {
-        date: document.getElementById("date").value,
-        exercise: document.getElementById("exercise").value,
-        weight: document.getElementById("weight").value,
-        reps: document.getElementById("reps").value,
-        sets: document.getElementById("sets").value,
-    };
+    const exerciseSelect = document.getElementById("exercise");
+    const form = document.getElementById("training-form");
 
-    if (window.Telegram.WebApp) {
-        Telegram.WebApp.sendData(JSON.stringify(data));
-        Telegram.WebApp.close();
-    } else {
-        alert("Ошибка: WebApp API не доступен.");
-    }
+    exercises.forEach(ex => {
+        const option = document.createElement("option");
+        option.value = ex;
+        option.textContent = ex;
+        exerciseSelect.appendChild(option);
+    });
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = {
+            date: form.date.value,
+            exercise: form.exercise.value,
+            weight: form.weight.value,
+            reps: form.reps.value,
+            sets: form.sets.value
+        };
+        tg.sendData(JSON.stringify(data));
+        tg.close();
+    });
 });
