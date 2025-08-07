@@ -1,143 +1,105 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Тренировочный дневник</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 15px;
-    background: #f7f7f7;
-  }
-  h2 {
-    cursor: pointer;
-    background: #2a9df4;
-    color: white;
-    padding: 10px;
-    border-radius: 4px;
-  }
-  .section-content {
-    background: white;
-    padding: 10px;
-    margin-bottom: 15px;
-    display: none;
-    border-radius: 0 0 4px 4px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-  }
-  .exercise-entry {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-  }
-  label {
-    display: block;
-    margin-top: 8px;
-  }
-  input[type="text"], input[type="number"], input[type="date"] {
-    width: 100%;
-    padding: 6px;
-    margin-top: 4px;
-    box-sizing: border-box;
-  }
-  button {
-    margin-top: 10px;
-    background: #2a9df4;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
-    width: 100%;
-    font-size: 16px;
-    cursor: pointer;
-  }
-  button:hover {
-    background: #1e7cd9;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blech Training</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .header {
+      padding: 16px;
+      background-color: #1e1e1e;
+      text-align: center;
+      font-size: 20px;
+      font-weight: bold;
+      border-bottom: 1px solid #2c2c2c;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .container {
+      padding: 16px;
+      max-width: 500px;
+      margin: auto;
+    }
+
+    label {
+      display: block;
+      margin: 12px 0 4px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      background-color: #2c2c2c;
+      color: #ffffff;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #3b82f6;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #2563eb;
+    }
+  </style>
 </head>
 <body>
+  <div class="header">Blech Training</div>
+  <div class="container">
+    <label for="date">📅 Дата (ГГГГ-ММ-ДД):</label>
+    <input type="date" id="date" value="2025-08-07" />
 
-<h1>Тренировочный дневник</h1>
+    <label for="exercise">🏋️‍♂️ Упражнение:</label>
+    <input type="text" id="exercise" placeholder="Жим лежа" />
 
-<h2 id="toggleBenchPress">Жим лежа</h2>
-<div id="benchPressContent" class="section-content">
-  <div class="exercise-entry">
-    <div>Дата: 2025-08-07</div>
-    <div>Вес: 80 кг</div>
-    <div>Подходы: 4</div>
-    <div>Повторы: 8</div>
+    <label for="weight">💪 Вес (кг):</label>
+    <input type="number" id="weight" placeholder="80" />
+
+    <label for="reps">🔁 Повторы:</label>
+    <input type="number" id="reps" placeholder="8" />
+
+    <label for="sets">📦 Подходы:</label>
+    <input type="number" id="sets" placeholder="4" />
+
+    <button onclick="sendData()">📤 Отправить тренировку</button>
   </div>
-</div>
 
-<h2 id="toggleSquats">Приседания</h2>
-<div id="squatsContent" class="section-content">
-  <div class="exercise-entry">
-    <div>Дата: 2025-08-05</div>
-    <div>Вес: 100 кг</div>
-    <div>Подходы: 5</div>
-    <div>Повторы: 6</div>
-  </div>
-</div>
-
-<h2>Добавить тренировку</h2>
-<form id="addTrainingForm">
-  <label for="date">Дата (ГГГГ-ММ-ДД):</label>
-  <input type="date" id="date" required />
-
-  <label for="exercise">Упражнение:</label>
-  <input type="text" id="exercise" placeholder="Например, Жим лежа" required />
-
-  <label for="weight">Вес (кг):</label>
-  <input type="number" id="weight" min="0" step="0.1" required />
-
-  <label for="sets">Подходы:</label>
-  <input type="number" id="sets" min="1" required />
-
-  <label for="reps">Повторы:</label>
-  <input type="number" id="reps" min="1" required />
-
-  <button type="submit">Отправить тренировку</button>
-</form>
-
-<script>
-  // Функция переключения видимости секций
-  function toggleSection(id) {
-    const el = document.getElementById(id);
-    if (el.style.display === "block") {
-      el.style.display = "none";
-    } else {
-      el.style.display = "block";
-    }
-  }
-
-  // Привязка обработчиков клика к заголовкам
-  document.getElementById('toggleBenchPress').onclick = () => toggleSection('benchPressContent');
-  document.getElementById('toggleSquats').onclick = () => toggleSection('squatsContent');
-
-  // Обработка формы
-  document.getElementById('addTrainingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const date = document.getElementById('date').value;
-    const exercise = document.getElementById('exercise').value.trim();
-    const weight = parseFloat(document.getElementById('weight').value);
-    const sets = parseInt(document.getElementById('sets').value);
-    const reps = parseInt(document.getElementById('reps').value);
-
-    if (!date || !exercise || isNaN(weight) || isNaN(sets) || isNaN(reps)) {
-      alert('Пожалуйста, заполните все поля корректно.');
-      return;
+  <script>
+    function sendData() {
+      const data = {
+        date: document.getElementById('date').value,
+        exercise: document.getElementById('exercise').value,
+        weight: document.getElementById('weight').value,
+        reps: document.getElementById('reps').value,
+        sets: document.getElementById('sets').value,
+      };
+      Telegram.WebApp.sendData(JSON.stringify(data));
     }
 
-    // Здесь можно отправить данные на сервер (например, через fetch к твоему боту)
-    // Пока просто покажем alert с введёнными данными
-    alert(`Добавлена тренировка:\n${date}\n${exercise}\nВес: ${weight} кг\nПодходы: ${sets}\nПовторы: ${reps}`);
-
-    // Очистка формы
-    this.reset();
-  });
-</script>
-
+    Telegram.WebApp.ready();
+    Telegram.WebApp.expand();
+  </script>
 </body>
 </html>
