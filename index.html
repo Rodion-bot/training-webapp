@@ -1,82 +1,143 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Добавить тренировку</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f2f2f2;
-        }
-        h2 {
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin-top: 15px;
-        }
-        input {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            box-sizing: border-box;
-        }
-        button {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: #2a9df4;
-            color: white;
-            border: none;
-            width: 100%;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #1e80d3;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Тренировочный дневник</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 15px;
+    background: #f7f7f7;
+  }
+  h2 {
+    cursor: pointer;
+    background: #2a9df4;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  .section-content {
+    background: white;
+    padding: 10px;
+    margin-bottom: 15px;
+    display: none;
+    border-radius: 0 0 4px 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .exercise-entry {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+  }
+  label {
+    display: block;
+    margin-top: 8px;
+  }
+  input[type="text"], input[type="number"], input[type="date"] {
+    width: 100%;
+    padding: 6px;
+    margin-top: 4px;
+    box-sizing: border-box;
+  }
+  button {
+    margin-top: 10px;
+    background: #2a9df4;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #1e7cd9;
+  }
+</style>
 </head>
 <body>
-    <h2>Добавить тренировку</h2>
-    <form id="training-form">
-        <label for="date">Дата (ГГГГ-ММ-ДД):</label>
-        <input type="date" id="date" name="date" required>
 
-        <label for="exercise">Упражнение:</label>
-        <input type="text" id="exercise" name="exercise" required>
+<h1>Тренировочный дневник</h1>
 
-        <label for="weight">Вес (кг):</label>
-        <input type="number" id="weight" name="weight" required>
+<h2 id="toggleBenchPress">Жим лежа</h2>
+<div id="benchPressContent" class="section-content">
+  <div class="exercise-entry">
+    <div>Дата: 2025-08-07</div>
+    <div>Вес: 80 кг</div>
+    <div>Подходы: 4</div>
+    <div>Повторы: 8</div>
+  </div>
+</div>
 
-        <label for="sets">Подходы:</label>
-        <input type="number" id="sets" name="sets" required>
+<h2 id="toggleSquats">Приседания</h2>
+<div id="squatsContent" class="section-content">
+  <div class="exercise-entry">
+    <div>Дата: 2025-08-05</div>
+    <div>Вес: 100 кг</div>
+    <div>Подходы: 5</div>
+    <div>Повторы: 6</div>
+  </div>
+</div>
 
-        <label for="reps">Повторы:</label>
-        <input type="number" id="reps" name="reps" required>
+<h2>Добавить тренировку</h2>
+<form id="addTrainingForm">
+  <label for="date">Дата (ГГГГ-ММ-ДД):</label>
+  <input type="date" id="date" required />
 
-        <button type="submit">Отправить тренировку</button>
-    </form>
+  <label for="exercise">Упражнение:</label>
+  <input type="text" id="exercise" placeholder="Например, Жим лежа" required />
 
-    <script>
-        const tg = window.Telegram.WebApp;
+  <label for="weight">Вес (кг):</label>
+  <input type="number" id="weight" min="0" step="0.1" required />
 
-        document.getElementById("training-form").addEventListener("submit", function(e) {
-            e.preventDefault();
+  <label for="sets">Подходы:</label>
+  <input type="number" id="sets" min="1" required />
 
-            const data = {
-                date: document.getElementById("date").value,
-                exercise: document.getElementById("exercise").value,
-                weight: document.getElementById("weight").value,
-                sets: document.getElementById("sets").value,
-                reps: document.getElementById("reps").value
-            };
+  <label for="reps">Повторы:</label>
+  <input type="number" id="reps" min="1" required />
 
-            tg.sendData(JSON.stringify(data));  // Отправка данных в web_app_data
-            tg.close(); // Закрыть WebApp после отправки
-        });
-    </script>
+  <button type="submit">Отправить тренировку</button>
+</form>
+
+<script>
+  // Функция переключения видимости секций
+  function toggleSection(id) {
+    const el = document.getElementById(id);
+    if (el.style.display === "block") {
+      el.style.display = "none";
+    } else {
+      el.style.display = "block";
+    }
+  }
+
+  // Привязка обработчиков клика к заголовкам
+  document.getElementById('toggleBenchPress').onclick = () => toggleSection('benchPressContent');
+  document.getElementById('toggleSquats').onclick = () => toggleSection('squatsContent');
+
+  // Обработка формы
+  document.getElementById('addTrainingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const date = document.getElementById('date').value;
+    const exercise = document.getElementById('exercise').value.trim();
+    const weight = parseFloat(document.getElementById('weight').value);
+    const sets = parseInt(document.getElementById('sets').value);
+    const reps = parseInt(document.getElementById('reps').value);
+
+    if (!date || !exercise || isNaN(weight) || isNaN(sets) || isNaN(reps)) {
+      alert('Пожалуйста, заполните все поля корректно.');
+      return;
+    }
+
+    // Здесь можно отправить данные на сервер (например, через fetch к твоему боту)
+    // Пока просто покажем alert с введёнными данными
+    alert(`Добавлена тренировка:\n${date}\n${exercise}\nВес: ${weight} кг\nПодходы: ${sets}\nПовторы: ${reps}`);
+
+    // Очистка формы
+    this.reset();
+  });
+</script>
+
 </body>
 </html>
