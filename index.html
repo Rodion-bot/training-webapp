@@ -1,89 +1,82 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Запись тренировки</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body {
-      background-color: #121212;
-      color: #ffffff;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      margin-top: 15px;
-    }
-
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border-radius: 5px;
-      border: none;
-      font-size: 16px;
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #00bfa5;
-      color: white;
-      font-size: 18px;
-      border: none;
-      border-radius: 8px;
-      margin-top: 25px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #009e8a;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Добавить тренировку</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+        h2 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #2a9df4;
+            color: white;
+            border: none;
+            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1e80d3;
+        }
+    </style>
 </head>
 <body>
-  <h1>Добавить тренировку</h1>
+    <h2>Добавить тренировку</h2>
+    <form id="training-form">
+        <label for="date">Дата (ГГГГ-ММ-ДД):</label>
+        <input type="date" id="date" name="date" required>
 
-  <label for="date">Дата (ГГГГ-ММ-ДД):</label>
-  <input type="date" id="date" value="2025-08-07">
+        <label for="exercise">Упражнение:</label>
+        <input type="text" id="exercise" name="exercise" required>
 
-  <label for="exercise">Упражнение:</label>
-  <input type="text" id="exercise" placeholder="Например: Жим лежа">
+        <label for="weight">Вес (кг):</label>
+        <input type="number" id="weight" name="weight" required>
 
-  <label for="weight">Вес (кг):</label>
-  <input type="number" id="weight" placeholder="Например: 80">
+        <label for="sets">Подходы:</label>
+        <input type="number" id="sets" name="sets" required>
 
-  <label for="sets">Подходы:</label>
-  <input type="number" id="sets" placeholder="Например: 3">
+        <label for="reps">Повторы:</label>
+        <input type="number" id="reps" name="reps" required>
 
-  <label for="reps">Повторы:</label>
-  <input type="number" id="reps" placeholder="Например: 8">
+        <button type="submit">Отправить тренировку</button>
+    </form>
 
-  <button id="sendBtn">Отправить тренировку</button>
+    <script>
+        const tg = window.Telegram.WebApp;
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand(); // развернуть окно
+        document.getElementById("training-form").addEventListener("submit", function(e) {
+            e.preventDefault();
 
-    document.getElementById('sendBtn').addEventListener('click', () => {
-      const data = {
-        date: document.getElementById('date').value,
-        exercise: document.getElementById('exercise').value,
-        weight: Number(document.getElementById('weight').value),
-        sets: Number(document.getElementById('sets').value),
-        reps: Number(document.getElementById('reps').value),
-      };
+            const data = {
+                date: document.getElementById("date").value,
+                exercise: document.getElementById("exercise").value,
+                weight: document.getElementById("weight").value,
+                sets: document.getElementById("sets").value,
+                reps: document.getElementById("reps").value
+            };
 
-      tg.sendData(JSON.stringify(data));
-    });
-  </script>
+            tg.sendData(JSON.stringify(data));  // Отправка данных в web_app_data
+            tg.close(); // Закрыть WebApp после отправки
+        });
+    </script>
 </body>
 </html>
