@@ -2,39 +2,196 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Добавить тренировку</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Тренировки WebApp</title>
+  <style>
+    body {
+      margin: 0; 
+      background-color: #121212; 
+      color: #eee; 
+      font-family: Arial, sans-serif;
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    select, input, button {
+      background-color: #222;
+      border: 1px solid #444;
+      color: #eee;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 4px;
+      width: 200px;
+      font-size: 16px;
+    }
+    button {
+      cursor: pointer;
+      background-color: #0066ff;
+      border-color: #0051cc;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0051cc;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 600px;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #333;
+    }
+    td {
+      background-color: #222;
+    }
+  </style>
 </head>
 <body>
-  <h2>Добавить тренировку</h2>
-  <form id="training-form">
-    <input type="date" name="date" required /><br>
-    <input type="text" name="exercise" placeholder="Упражнение" required /><br>
-    <input type="number" name="weight" placeholder="Вес (кг)" required /><br>
-    <input type="number" name="reps" placeholder="Повторы" required /><br>
-    <input type="number" name="sets" placeholder="Подходы" required /><br><br>
-    <button type="submit">Отправить тренировку</button>
-  </form>
+  <h1>Контроль тренировок</h1>
+  <div id="root"></div>
 
-  <script>
-    const tg = window.Telegram.WebApp;
+  <!-- React и ReactDOM через CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <!-- Babel для JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    document.getElementById('training-form').addEventListener('submit', function (e) {
-      e.preventDefault();
+  <script type="text/babel">
+    const { useState } = React;
 
-      const form = e.target;
-      const data = {
-        date: form.date.value,
-        exercise: form.exercise.value,
-        weight: form.weight.value,
-        reps: form.reps.value,
-        sets: form.sets.value
-      };
+    const exercises = [
+      "Жим лёжа",
+      "Приседания",
+      "Становая тяга",
+      "Подтягивания",
+      "Жим вверх",
+      "Тяга горизонтальная",
+      "Отжимания на брусьях"
+    ];
 
-      tg.sendData(JSON.stringify(data)); // Отправка данных в бота
-      tg.close(); // Закрыть WebApp
-    });
+    function App() {
+      const [date, setDate] = useState(new Date().toISOString().slice(0, 10));
+      const [exercise, setExercise] = useState(exercises[0]);
+      const [weight, setWeight] = useState('');
+      const [reps, setReps] = useState('');
+      const [sets, setSets] = useState('');
+      const [progress, setProgress] = useState([]);
+
+      function sendData() {
+        if (!weight || !reps || !sets) {
+          alert("Пожалуйста, заполните все поля.");
+          return;
+        }
+
+        const training = { date, exercise, weight, reps, sets };
+        
+        // Отправка данных в Telegram WebApp
+        if (window.Telegram && window.Telegram.WebApp) {
+          window.Telegram.WebApp.sendData(JSON.stringify(training));
+        }
+
+        // Добавляем в локальный прогресс
+        setProgress(prev => [training, ...prev]);
+
+        // Очищаем форму, кроме даты и упражнения
+        setWeight('');
+        setReps('');
+        setSets('');
+      }
+
+      return (
+        <>
+          <label>
+            Дата:<br />
+            <input type="date" value={date} onChange={e => setDate(e.target.value)} />
+          </label>
+          <br />
+          <label>
+            Упражнение:<br />
+            <select value={exercise} onChange={e => setExercise(e.target.value)}>
+              {exercises.map((ex, i) => (
+                <option key={i} value={ex}>{ex}</option>
+              ))}
+            </select>
+          </label>
+          <br />
+          <label>
+            Вес (кг):<br />
+            <input
+              type="number"
+              min="0"
+              value={weight}
+              onChange={e => setWeight(e.target.value)}
+              placeholder="Введите вес"
+            />
+          </label>
+          <br />
+          <label>
+            Повторы:<br />
+            <input
+              type="number"
+              min="1"
+              value={reps}
+              onChange={e => setReps(e.target.value)}
+              placeholder="Введите количество повторов"
+            />
+          </label>
+          <br />
+          <label>
+            Подходы:<br />
+            <input
+              type="number"
+              min="1"
+              value={sets}
+              onChange={e => setSets(e.target.value)}
+              placeholder="Введите количество подходов"
+            />
+          </label>
+          <br />
+          <button onClick={sendData}>Отправить тренировку</button>
+
+          {progress.length > 0 && (
+            <>
+              <h2>Прогресс</h2>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Дата</th>
+                    <th>Упражнение</th>
+                    <th>Вес (кг)</th>
+                    <th>Повторы</th>
+                    <th>Подходы</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {progress.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.date}</td>
+                      <td>{item.exercise}</td>
+                      <td>{item.weight}</td>
+                      <td>{item.reps}</td>
+                      <td>{item.sets}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
   </script>
 </body>
 </html>
